@@ -1,0 +1,48 @@
+case 0:
+		return Vector3{v.X, v.Y, v.Z}
+	case 1:
+		return Vector3{v.X, -v.Z, v.Y}
+	case 2:
+		return Vector3{v.X, -v.Y, -v.Z}
+	case 3:
+		return Vector3{v.X, v.Z, -v.Y}
+	case 4:
+		return Vector3{-v.X, -v.Y, v.Z}
+	case 5:
+		return Vector3{-v.X, -v.Z, -v.Y}
+	case 6:
+		return Vector3{-v.X, v.Y, -v.Z}
+	case 7:
+		return Vector3{-v.X, v.Z, v.Y}
+	case 8:
+		return Vector3{v.Y, v.X, -v.Z}
+	case 9:
+		return Vector3{v.Y, -v.X, v.Z}
+	case 10:
+		return Vector3{v.Y, v.Z, v.X}
+	case 11:
+		return Vector3{v.Y, -v.Z, -v.X}
+	case 12:
+		return Vector3{-v.Y, v.X, v.Z}
+	case 13:
+		return Vector3{-v.Y, -v.X, -v.Z}
+	case 14:
+		return Vector3{-v.Y, -v.Z, v.X}
+	case 15:
+		return Vector3{-v.Y, v.Z, -v.X}
+	case 16:
+		return Vector3{v.Z, v.X, v.Y}
+	case 17:
+		return Vector3{v.Z, -v.X, -v.Y}
+	case 18:
+		return Vector3{v.Z, -v.Y, v.X}
+	case 19:
+		return Vector3{v.Z, v.Y, -v.X}
+	case 20:
+		return Vector3{-v.Z, v.X, -v.Y}
+	case 21:
+		return Vector3{-v.Z, -v.X, v.Y}
+	case 22:
+		return Vector3{-v.Z, v.Y, v.X}
+	case 23:
+		return Vector3{-v.Z, -v.Y, -v.X}

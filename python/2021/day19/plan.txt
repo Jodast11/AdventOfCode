@@ -1,0 +1,2 @@
+1) Put all points from scanner 0 in a list with known points
+2) Go through all other scanners positions (including rotated) and try offset them so, that at least one point overlaps and then count the other overlapping points

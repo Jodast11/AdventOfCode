@@ -1,0 +1,2 @@
+def getPresentsReceived(houseId):
+    pass

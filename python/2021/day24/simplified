@@ -1,0 +1,15 @@
+[14, 15, 12, 11, -5, 14, 15, -13, -16, -8, 15, -8, 0, -4]
+[1, 1, 1, 1, 26, 1, 1, 26, 26, 26, 1, 26, 26, 26]
+[12, 7, 1, 2, 4, 15, 11, 5, 3, 9, 2, 3, 3, 11]
+
+def doStep(z,div1,add1,add2,inp):
+    x = int(((z%26)+add1) != inp) 
+    y = 26 if x else 1
+    z = math.floor(z/div1)*y
+    y = inp+add2 if x else 0
+    return z+y 
+
+z can only become 0 again if div1 is bigger than z
+div1 cant be bigger than 26 -> 
+
+1)Calculate the allowed z values for the last opperation
