@@ -1,4 +1,4 @@
-input = "1321131112"
+input = "1113222113"
 output = ""
 
 cycles = 50

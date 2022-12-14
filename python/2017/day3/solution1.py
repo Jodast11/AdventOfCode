@@ -50,4 +50,4 @@ def getOffset(number):
         return ring + (number - ringCenterNumbers[3])
 
 
-print(getOffset(289326))
+print(getOffset(265149))

@@ -76,7 +76,7 @@ startTime = time.time()
 
 alpahabet = string.ascii_lowercase
 
-input = [alpahabet.index(letter) for letter in "hxbxwxba"]
+input = [alpahabet.index(letter) for letter in "cqjxjnds"]
 
 print(toString(getNextValid(increment(getNextValid(input)))))
 

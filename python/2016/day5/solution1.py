@@ -12,4 +12,4 @@ def getPassword(input):
             add += 1
     return password
 
-print(getPassword("ffykfhsq"))
+print(getPassword("abbhdwsy"))

@@ -30,4 +30,4 @@ for programmName in programms:
     if not programms[programmName].lowerProgramm:
         print(programmName)
 
-print(programms)
+#print(programms)

@@ -1,4 +1,7 @@
-instructions = [x.strip() for x in open("input.txt")][0]
+import os
+
+with open(f"{os.path.dirname(os.path.realpath(__file__))}/input.txt", "r") as f:
+    instructions = [x for x in f.read().split("\n")[0]]
 
 def getVisitedHouses(instructions):
     xPos = 0

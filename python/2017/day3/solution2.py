@@ -120,4 +120,4 @@ def getAdjacentIndexes(index):
 
 memoryBank = [1]
 
-print(getAdjacentIndexes(27))
+print(getAdjacentIndexes(265149))

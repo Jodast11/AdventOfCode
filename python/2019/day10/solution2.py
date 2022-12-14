@@ -1,142 +1,99 @@
 import math
 
-puzzleInput = [line.strip() for line in open("input.txt").readlines()]
+def getRelativePosition(posA, posB): #Returns the relative distance between two points
+    return (posB[0]-posA[0], posB[1]-posA[1])
 
-mapSize = len(puzzleInput[0]) - 1
+def tupleAbs(pos): #Makes a tuple positive
+    return (abs(pos[0]), abs(pos[1]))
 
-spaceMap = [[char == "#" for char in line] for line in puzzleInput]
+def simplify(pos): #Gets the simplest representation of vector ([4,12] -> [1,3])
+    for i in range(max(tupleAbs(pos)), 1, -1):
+        if pos[1] % i == 0 and pos[0] % i == 0:
+            return (int(pos[0]/i), int(pos[1]/i))
+    return pos
 
-asteroidLocations = []
+def vectorAngle(vecA, vecB): #Calculates the angle between two vectors
+    a, b = vecA
+    c, d = vecB
+    dotProduct = a*c + b*d
+    modOfVector1 = math.sqrt( a*a + b*b)*math.sqrt(c*c + d*d) 
+    angle = dotProduct/modOfVector1
+    return math.degrees(math.acos(angle))
 
-currentPosition = [0,0]
+def calcAngleA(vec): #Used to sort vector that point to the left
+    return vectorAngle((0, -1), vec)
 
-for y, line in enumerate(spaceMap):
-    for x, containsAsteroid in enumerate(line):
-        if containsAsteroid:
-            asteroidLocations.append([x,y])
+def calcAngleB(vec): #Used to sort vector that point to the right
+    return vectorAngle((0, 1), vec)
 
-def getPoints(startPosition, direction, tilt):
-    global mapSize
-    points = []
-    currentPosition = [startPosition[0], startPosition[1]]
-    while currentPosition[0] <= mapSize and currentPosition[0] >= 0 and currentPosition[1] <= mapSize and currentPosition[1] >= 0:
-        if float(round(currentPosition[1], 9)).is_integer() and currentPosition != startPosition:
-            points.append([int(currentPosition[0]), int(round(currentPosition[1], 9))])
-        currentPosition[0] += direction
-        currentPosition[1] += tilt * direction
-        currentPosition[0] = currentPosition[0]
-        currentPosition[1] = currentPosition[1]
-    return points
+def getStationOffset(pos):
+    global stationPosition
+    return abs(pos[0]-stationPosition[0])+abs(pos[1]-stationPosition[1])
 
-def getTilt(x1, y1, x2, y2):
-    dy = (y2 - y1)
-    dx = (x2-x1)
-    if dx != 0:
-        return dy/dx
+input = [line.strip() for line in open("input.txt").readlines()]
 
-def calcDistance(asteroidPosition):
-    global currentPosition
-    return abs(asteroidPosition[0]-currentPosition[0]) + abs(asteroidPosition[1]-currentPosition[1])
+asteroidPositions = [] #All the positions were asteroids are
 
-def getVerticalLinePositions(startPosition, direction):
-    points = []
-    currentPosition = [startPosition[0], startPosition[1]]
-    while currentPosition[1] <= mapSize and currentPosition[1] >= 0:
-        currentPosition[1] += direction
-        newPoint = [currentPosition[0], currentPosition[1]]
-        if newPoint != startPosition:
-            points.append(newPoint)
-    return points
+for y, line in enumerate(input): #Retrieve the positions of the asteroids
+    for x, isAsteroid in enumerate(line):
+        if isAsteroid == "#":
+            asteroidPositions.append((x,y))
 
-def getVisible(asteroidLocations, x, y):
-    global currentPosition
+asteroidPositions.sort() #Srt for convenience
 
-    blockedLocations = []
-    currentPosition = [x, y]
+#We need to first get the place withe the most visible asteroids, that are not blocked by others
 
-    asteroidLocations.sort(key=calcDistance) #sort by nearest
+stationPosition = (0,0)
+maxAsteroids = 0
 
-    for asteroidLocation in asteroidLocations:
-        if asteroidLocation not in blockedLocations and not (asteroidLocation[0] == x and asteroidLocation[1] == y): #if the asteroid is visible and isnt the same as the current one
+for possibleStationPos in asteroidPositions:
+    asteroidCount = len(list(set([simplify(getRelativePosition(possibleStationPos, asteroidPosition)) for asteroidPosition in asteroidPositions])))-1 #We get the amont of unique simplified vectors to all the other points
+    if asteroidCount > maxAsteroids:
+        maxAsteroids = asteroidCount
+        stationPosition = possibleStationPos
 
-            #block all the invisible asteroids
-            tilt = getTilt(currentPosition[0], currentPosition[1], asteroidLocation[0], asteroidLocation[1])
-            if type(tilt) == float or type(tilt) == int:
-                points = getPoints(asteroidLocation, -1 if currentPosition[0] > asteroidLocation[0] else 1, tilt)
-            else:
-                points = getVerticalLinePositions(asteroidLocation, -1 if currentPosition[1] > asteroidLocation[1] else 1)
-            for blockedLocaton in points:
-                if blockedLocaton in asteroidLocations:
-                    blockedLocations.append(blockedLocaton)
-    
-    visibleAsteroids = []
+#Now we know from wich asteroid we can view the most others. We will now have to sort the vectors, so they are in the correct order (clockwise, from position up)
 
-    for asteroidLocation in asteroidLocations:
-        if asteroidLocation not in blockedLocations:
-            visibleAsteroids.append(asteroidLocation)
+#stationPosition = (11, 13)
 
-    return visibleAsteroids
+asteroidDirections = {}
 
-def getAngle(p):
-    global center
-    dx = center[0]-p[0]
-    dy = center[1]-p[1]
-    if dx:
-        return abs(math.degrees(math.atan(dy/dx)))
+for asteroidPosition in asteroidPositions:
+    if asteroidPosition != stationPosition:
+        direction = simplify(getRelativePosition(stationPosition, asteroidPosition))
+        if direction not in asteroidDirections:
+            asteroidDirections[direction] = [asteroidPosition]
+        else:
+            asteroidDirections[direction].append(asteroidPosition)
+
+directions = list(asteroidDirections.keys())
+
+directionGroups = [[], []]
+
+for direction in directions:
+    if direction[0] >= 0:
+        directionGroups[0].append(direction)
     else:
-        return 90
+        directionGroups[1].append(direction)
 
-def splitCircle(visible):
-    global center
-    quarters = [[],[],[],[]]
+directionGroups[0].sort(key=calcAngleA)
 
-    cx = center[0]
-    cy = center[1]
+directionGroups[1].sort(key=calcAngleB)
 
-    for point in visible:
-        px = point[0]
-        py = point[1]
+directions = directionGroups[0] + directionGroups[1]
 
-        if px >= cx and py < cy:
-            quarters[0].append(point)
-            continue
-        
-        if px > cx and py >= cy:
-            quarters[1].append(point)
-            continue
+asteroidsDestroied = 0
+currentAngleIndex = 0
 
-        if px <= cx and py > cy:
-            quarters[2].append(point)
-            continue
-
-        if px < cx and py <= cy:
-            quarters[2].append(point)
-            continue
-
-    quarters[0].sort(key=getAngle)
-    quarters[1].sort(key=getAngle)
-    quarters[2].sort(key=getAngle)
-    quarters[3].sort(key=getAngle)
-
-    quarters[0] = quarters[0][::-1]
-    quarters[1] = quarters[1][::-1]
-    quarters[2] = quarters[2][::-1]
-    quarters[3] = quarters[3][::-1]
-
-    return quarters[0] + quarters[1] + quarters[2] + quarters[3]
-
-#get visible
-#cast to four lines (one per quarter)
-#get sequence
-
-center = [11, 13]
-
-visible = getVisible(asteroidLocations, 11, 13)
-
-quarters = splitCircle(visible)
+for destroyTarget in directions:
+    asteroidDirections[destroyTarget].sort(key=getStationOffset)
 
 while True:
-    print(quarters[int(input(">"))])
-
-""" for v in visible:
-    print(f"{math.degrees(getAngle(v))}:{v}") """
+    if len(asteroidDirections[directions[currentAngleIndex]]) != 0:
+        destroidAsteroid = asteroidDirections[directions[currentAngleIndex]].pop(0)
+        asteroidsDestroied += 1
+        if asteroidsDestroied > 199:
+            print(destroidAsteroid[0]*100+destroidAsteroid[1])
+            break
+    currentAngleIndex += 1
+    currentAngleIndex %= len(directions)

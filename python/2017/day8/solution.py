@@ -1,36 +1,62 @@
-class Instruction:
-    def __init__(self, targetRegister, opperation, checkRegister, opperand, number):
-        self.targetRegister = targetRegister
-        self.opperation = opperation
-        self.checkRegister = checkRegister
-        self.opperand = opperand
-        self.number = number
+programm = [line.strip() for line in open("input.txt","r").readlines()]
 
-    def applyOperation(self, checkRegisterValue):
-        return self.targetRegister, self.opperation*eval(f"{checkRegisterValue}{self.opperand}{self.number}")
-        
+registers = {}
 
-rawInstructions = [instruction.strip() for instruction in open("input.txt","r").readlines()]
+def getValue(registers, registerName):
+    if registerName not in registers:
+        return 0
+    return registers[registerName]
 
-instructions = []
+def checkCondition(condition, registers):
+    registerName, opperand, numericValue = condition.split(" ")
+    registerValue = getValue(registers, registerName)
+    numericValue = int(numericValue)
 
-for rawInstruction in rawInstructions:
-    instructionParts = rawInstruction.split(" ")
-    instructions.append(Instruction(instructionParts[0], (-1 if instructionParts[1] == "dec" else 1) * int(instructionParts[2]), instructionParts[4], instructionParts[5], int(instructionParts[6])))
+    if ">" == opperand:
+        return registerValue > numericValue
+    elif ">=" == opperand:
+        return registerValue >= numericValue
+    elif "<" == opperand:
+        return registerValue < numericValue
+    elif "<=" == opperand:
+        return registerValue <= numericValue
+    elif "!=" == opperand:
+        return registerValue != numericValue
+    elif "==" == opperand:
+        return registerValue == numericValue
+    else:
+        print(f"Unknown condition {condition}")
 
-allRegisters = {}
-maxValue = 0
+def incValue(amount, registerName, registers):
+    if registerName in registers:
+        registers[registerName] += amount
+    else:
+        registers[registerName] = amount
 
-for instruction in instructions:
-    if instruction.targetRegister not in allRegisters:
-        allRegisters[instruction.targetRegister] = 0
-    if instruction.checkRegister not in allRegisters:
-        allRegisters[instruction.checkRegister] = 0
+def decValue(amount, registerName, registers):
+    if registerName in registers:
+        registers[registerName] -= amount
+    else:
+        registers[registerName] = -amount
 
-    targetRegister, change = instruction.applyOperation(allRegisters[instruction.checkRegister])
-    allRegisters[targetRegister] += change
-    if allRegisters[targetRegister] > maxValue:
-        maxValue = allRegisters[targetRegister]
+def applyOperation(operation, registers):
+    registerName, opperand, numericValue = operation.split(" ")
+    numericValue = int(numericValue)
 
-print(f"Solution 1: {max(allRegisters.values())}")
-print(f"Solution 2: {maxValue}")
+    if opperand == "dec":
+        decValue(numericValue, registerName, registers)
+    elif opperand == "inc":
+        incValue(numericValue, registerName, registers)
+    else:
+        print(f"Unknown condition {opperand}")
+
+allTimeMaxValues = []
+
+for instruction in programm:
+    operation, condition = instruction.split(" if ")
+    if checkCondition(condition, registers):
+        applyOperation(operation, registers)
+        allTimeMaxValues.append(max([registers[key] for key in registers]))
+
+print(f"Solution 1: {max([registers[key] for key in registers])}")
+print(f"Solution 2: {max(allTimeMaxValues)}")

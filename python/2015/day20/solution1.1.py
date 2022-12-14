@@ -1,2 +1,0 @@
-def getPresentsReceived(houseId):
-    pass

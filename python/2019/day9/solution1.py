@@ -31,16 +31,16 @@ def runProgramm(programm, inputs):
         instruction = int(str(instructionString)[-2:])
         modes = [int(x) for x in instructionString[:-2][::-1]]
 
-        if instruction == 1:
+        if instruction == 1: #Add
             programm[getValue(programm, programm[currentIndex + 3], getMode(modes, 2), relativeBase, True)] = getValue(programm, programm[currentIndex + 1], getMode(modes, 0), relativeBase, False) + getValue(programm, programm[currentIndex + 2], getMode(modes, 1), relativeBase, False)
             instructionLength = 4
-        elif instruction == 2:
+        elif instruction == 2: #Subtract
             programm[getValue(programm, programm[currentIndex + 3], getMode(modes, 2), relativeBase, True)] = getValue(programm, programm[currentIndex + 1], getMode(modes, 0), relativeBase, False) * getValue(programm, programm[currentIndex + 2], getMode(modes, 1), relativeBase, False)
             instructionLength = 4
-        elif instruction == 3:
+        elif instruction == 3: #Get input
             programm[getValue(programm, programm[currentIndex + 1], getMode(modes, 0), relativeBase, True)] = inputs
             instructionLength = 2
-        elif instruction == 4:
+        elif instruction == 4: #Output
             print(getValue(programm, programm[currentIndex + 1], getMode(modes, 0), relativeBase, False))
             instructionLength = 2
         elif instruction == 5:
@@ -64,7 +64,7 @@ def runProgramm(programm, inputs):
         elif instruction == 9:
             relativeBase += getValue(programm, programm[currentIndex + 1], getMode(modes, 0), relativeBase, False)
             instructionLength = 2
-        elif instruction == 99:
+        elif instruction == 99: #Programm finished
             break
         else:
             print("Error")

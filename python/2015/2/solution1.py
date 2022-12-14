@@ -13,7 +13,7 @@ for line in input:
 
 for dimension in dimensions:
     try:
-        print(getBoxSurface(dimension[0],dimension[1],dimension[2]))
+        #print(getBoxSurface(dimension[0],dimension[1],dimension[2]))
         total += getBoxSurface(dimension[0],dimension[1],dimension[2])
     except:
         print("Error")

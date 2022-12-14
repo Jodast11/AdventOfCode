@@ -17,4 +17,4 @@ def getPassword(input):
         add += 1
     return password
 
-print("".join(getPassword("ffykfhsq")))
+print("".join(getPassword("abbhdwsy")))

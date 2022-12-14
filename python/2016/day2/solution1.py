@@ -19,5 +19,7 @@ for instructionLine in instructionLines:
         if instruction == "L":
             if currentCords[0] - 1 >= 0 and currentCords[0] - 1 <= 2:
                 currentCords[0] -= 1
-    print(calculateNumber(currentCords))
+    print(calculateNumber(currentCords), end="")
+
+print()
 

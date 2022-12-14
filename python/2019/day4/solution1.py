@@ -1,4 +1,4 @@
-input = [int(x) for x in "271973-785961".split("-")]
+input = [int(x) for x in "387638-919123".split("-")]
 
 validPasswordsCount = 0
 

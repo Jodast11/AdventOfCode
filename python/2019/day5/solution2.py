@@ -55,4 +55,4 @@ def runProgramm(programmInput, input):
 
 programm = [int(x) for x in [line.strip() for line in open("input.txt").readlines()][0].split(",")]
 
-runProgramm(programm, 69)
+runProgramm(programm, 5)
